@@ -1,0 +1,122 @@
+{
+  "id": "media.cover-studio",
+  "name": "媒体库封面工坊",
+  "version": "2.6.1",
+  "sdkVersion": "2",
+  "entry": "plugin.py:Plugin",
+  "description": "为 Emby 媒体库自动生成 1920×1080 分类封面：从库里抓作品海报（按作品名+年份去重，同一部片只取一张），合成斜排圆角海报墙 + 中英文标题，可选左上角显示媒体数量角标，最后一键写回 Emby。",
+  "author": "Hermes",
+  "permissions": [
+    "emby.api",
+    "storage"
+  ],
+  "configSchema": {
+    "type": "object",
+    "additionalProperties": true
+  },
+  "actions": [
+    {
+      "id": "generate",
+      "label": "生成并写回 Emby 封面",
+      "fields": [
+        {
+          "key": "dryRun",
+          "label": "仅预览不写回",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "key": "libraryIds",
+          "label": "只处理这些媒体库（留空=全部）",
+          "type": "stringList"
+        }
+      ]
+    },
+    {
+      "id": "save-config",
+      "label": "保存配置",
+      "fields": [
+        {
+          "key": "embyUrl",
+          "label": "Emby 地址",
+          "type": "text",
+          "default": ""
+        },
+        {
+          "key": "embyApiKey",
+          "label": "Emby API Key",
+          "type": "text",
+          "default": ""
+        },
+        {
+          "key": "serverId",
+          "label": "Emby 服务器 ID（留空自动）",
+          "type": "text",
+          "default": ""
+        },
+        {
+          "key": "badgeEnabled",
+          "label": "显示数量角标",
+          "type": "boolean",
+          "default": true
+        },
+        {
+          "key": "badgeAlpha",
+          "label": "角标背景透明度 0-255",
+          "type": "text",
+          "default": "180"
+        },
+        {
+          "key": "style",
+          "label": "背景风格（cinema-mesh / plain）",
+          "type": "text",
+          "default": "cinema-mesh"
+        },
+        {
+          "key": "skipLibraries",
+          "label": "跳过的媒体库",
+          "type": "stringList"
+        },
+        {
+          "key": "titleMapEnabled",
+          "label": "开启自定义中英文名",
+          "type": "boolean",
+          "default": false
+        },
+        {
+          "key": "titleMap",
+          "label": "标题映射表(JSON)",
+          "type": "text",
+          "default": ""
+        }
+      ]
+    },
+    {
+      "id": "restore-default",
+      "label": "清空运行记录"
+    }
+  ],
+  "queries": [
+    {
+      "id": "status",
+      "label": "配置、服务器、媒体库与最近运行结果",
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    },
+    {
+      "id": "libraries",
+      "label": "读取 Emby 媒体库列表",
+      "outputSchema": {
+        "type": "object",
+        "additionalProperties": true
+      }
+    }
+  ],
+  "ui": {
+    "mode": "python",
+    "version": "2",
+    "entry": ""
+  }
+}

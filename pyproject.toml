@@ -1,0 +1,22 @@
+[project]
+name = "media-cover-studio"
+version = "2.6.1"
+description = "媒体库封面工坊（Emby 媒体库分类封面自动生成）"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "pillow>=10.0.0",
+]
+
+[tool.uv]
+package = false
+
+[tool.mt-plugin]
+include = [
+  "plugin.py",
+  "ui_page.py",
+  "README.md",
+  "plugin.json",
+  "pyproject.toml",
+  "mt_cover",
+  "fonts",
+]
