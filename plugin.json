@@ -1,11 +1,11 @@
 {
   "id": "media.cover-studio",
   "name": "媒体库封面工坊",
-  "version": "2.6.1",
+  "version": "2.9.0",
   "sdkVersion": "2",
   "entry": "plugin.py:Plugin",
   "description": "为 Emby 媒体库自动生成 1920×1080 分类封面：从库里抓作品海报（按作品名+年份去重，同一部片只取一张），合成斜排圆角海报墙 + 中英文标题，可选左上角显示媒体数量角标，最后一键写回 Emby。",
-  "author": "Hermes",
+  "author": "kunmini",
   "permissions": [
     "emby.api",
     "storage"
@@ -57,6 +57,12 @@
         {
           "key": "badgeEnabled",
           "label": "显示数量角标",
+          "type": "boolean",
+          "default": true
+        },
+        {
+          "key": "badgeRandomColor",
+          "label": "角标随机彩色",
           "type": "boolean",
           "default": true
         },
@@ -117,6 +123,7 @@
   "ui": {
     "mode": "python",
     "version": "2",
-    "entry": ""
+    "entry": "",
+    "icon": "ui/icon.png"
   }
 }

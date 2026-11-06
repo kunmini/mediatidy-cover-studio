@@ -1,6 +1,6 @@
 [project]
 name = "media-cover-studio"
-version = "2.6.1"
+version = "2.9.0"
 description = "媒体库封面工坊（Emby 媒体库分类封面自动生成）"
 requires-python = ">=3.12,<3.13"
 dependencies = [
@@ -14,6 +14,7 @@ package = false
 include = [
   "plugin.py",
   "ui_page.py",
+  "ui/icon.png",
   "README.md",
   "plugin.json",
   "pyproject.toml",

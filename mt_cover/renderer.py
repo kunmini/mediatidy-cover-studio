@@ -51,7 +51,13 @@ BG_BLEND = 0.78                # 模糊海报在背景中的权重
 BADGE_X, BADGE_Y = 58, 43
 BADGE_H = 156
 BADGE_MIN_W = 180
-BADGE_RADIUS = 18
+BADGE_RADIUS = 45
+
+# ── 缎带款式参数 ──
+RIBBON_FONT_SIZE = 52
+RIBBON_PAD = 120
+RIBBON_OFFSET_X = 0
+RIBBON_OFFSET_Y = 0
 BADGE_PAD_X = 44
 BADGE_FONT_SIZE = 92
 BADGE_BG = (32, 37, 41)        # 深灰底色
@@ -207,10 +213,34 @@ def draw_titles(img: Image.Image, title: str, subtitle: str,
 
 
 # ── 数量角标 ──────────────────────────────────────────────────
+# 彩色底色池（避开纯黑/纯白，保持和封面协调）
+BADGE_COLORS = [
+    (24, 92, 190),    # 蓝
+    (16, 140, 96),    # 绿
+    (222, 98, 34),    # 橙
+    (150, 58, 150),   # 紫
+    (200, 48, 60),    # 红
+    (196, 150, 30),   # 金
+    (32, 132, 148),   # 青
+    (120, 82, 172),   # 靛
+]
+
+
+def _pick_badge_color(seed: str) -> tuple:
+    """按库名稳定取色：同一个库每次生成颜色一致，不同库之间颜色分散。"""
+    h = 0
+    for ch in str(seed or ""):
+        h = (h * 131 + ord(ch)) & 0xFFFFFFFF
+    return BADGE_COLORS[h % len(BADGE_COLORS)]
+
+
 def draw_badge(img: Image.Image, count, font_path: str | None,
                label: str = "%s", bg: tuple | None = None,
-               fg: str = BADGE_FG) -> Image.Image:
-    """在左上角画媒体数量角标（纯数字，深灰圆角块）。"""
+               fg: str = BADGE_FG, seed: str = "") -> Image.Image:
+    """在左上角画媒体数量角标。
+
+    bg 为 None 时按 seed（库名）稳定取一个彩色底。
+    """
     if count is None or count == "":
         return img
     text = (label % count) if "%s" in (label or "") else str(label)
@@ -222,12 +252,11 @@ def draw_badge(img: Image.Image, count, font_path: str | None,
     tw = box[2] - box[0]
     w = max(BADGE_MIN_W, tw + BADGE_PAD_X * 2)
 
-    base_bg = bg or BADGE_BG
+    base_bg = bg if bg else _pick_badge_color(seed)
     fill_rgba = (*base_bg[:3], base_bg[3] if len(base_bg) > 3 else BADGE_ALPHA)
     d.rounded_rectangle([BADGE_X, BADGE_Y, BADGE_X + w, BADGE_Y + BADGE_H],
                         radius=BADGE_RADIUS, fill=fill_rgba)
 
-    # 水平 + 垂直居中（减 box 偏移，否则字形边距会让数字看起来偏左）
     tx = BADGE_X + (w - tw) // 2 - box[0]
     ty = BADGE_Y + (BADGE_H - (box[3] - box[1])) // 2 - box[1]
     d.text((tx, ty), text, font=f, fill=_rgb(fg))
@@ -239,7 +268,9 @@ def draw_badge(img: Image.Image, count, font_path: str | None,
 def render_cover(posters: list[bytes], title: str, subtitle: str,
                  fonts: tuple[str | None, str | None] = (None, None),
                  base_color: str = BASE_BG, background: bool = True,
-                 badge_count=None, badge_alpha: int | None = None) -> bytes:
+                 badge_count=None, badge_alpha: int | None = None,
+                 badge_color: tuple | None = None,
+                 random_color: bool = True) -> bytes:
     """生成 1920×1080 封面，返回 PNG 字节。
 
     Args:
@@ -263,9 +294,15 @@ def render_cover(posters: list[bytes], title: str, subtitle: str,
     canvas = draw_titles(canvas, title, subtitle, fonts[0], fonts[1])
 
     if badge_count is not None and badge_count != "":
-        bg = None
-        if badge_alpha is not None:
-            bg = (*BADGE_BG, badge_alpha)
+        alpha = badge_alpha if badge_alpha is not None else BADGE_ALPHA
+        if badge_color:
+            bg = (*badge_color[:3], alpha)
+        elif random_color:
+            # 随机彩色（按库名稳定取色，同库每次一致）
+            bg = (*_pick_badge_color(title), alpha)
+        else:
+            # 关闭随机色 → 用固定深灰（原配色）
+            bg = (*BADGE_BG, alpha)
         canvas = draw_badge(canvas, badge_count, fonts[0] or fonts[1], bg=bg)
 
     buf = io.BytesIO()

@@ -1,5 +1,7 @@
 # 媒体库封面工坊（media.cover-studio）
 
+作者：**kunmini**
+
 为 Emby 媒体库自动生成 1920×1080 的分类封面。
 
 ![效果](docs/preview.png)
@@ -75,3 +77,8 @@ Emby 的 `POST /Items/{id}/Images/Primary` 接收的是 **base64 字符串**，
 MIT
 
 思源黑体（Source Han Sans）版权归 Adobe，遵循 SIL Open Font License 1.1。
+
+
+## 插件图标
+
+图标位于 `ui/icon.png`，通过 `plugin.json` 的 `ui.icon` 字段声明（MediaTidy 要求路径必须带 `ui/` 前缀，且文件真实放在 `ui/` 目录下）。

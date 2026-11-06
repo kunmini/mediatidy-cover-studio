@@ -299,6 +299,8 @@ def build_page(ctx: Context, cfg_override: dict | None = None) -> dict:
             component("Input", label="Emby API Key", bind="config.embyApiKey"),
             component("Checkbox", label="在封面左上角显示媒体数量",
                       bind="config.badgeEnabled"),
+            component("Checkbox", label="角标随机彩色（每个库一个颜色）",
+                      bind="config.badgeRandomColor"),
             component("Select", label="角标背景深浅", bind="config.badgeAlpha",
                       options=[{"value": "255", "label": "不透明"},
                                {"value": "217", "label": "轻微透明"},

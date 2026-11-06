@@ -1,3 +1,6 @@
 __pycache__/
 *.pyc
 *.zip
+preview_out/
+make_logo.py
+*.local.py

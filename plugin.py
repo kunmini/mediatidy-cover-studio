@@ -346,7 +346,7 @@ class Plugin(PluginBase):
             pass
 
         for key in ("embyUrl", "embyApiKey", "serverId", "style",
-                    "badgeEnabled", "badgeAlpha", "skipLibraries", "onlyLibraries",
+                    "badgeEnabled", "badgeAlpha", "badgeRandomColor", "skipLibraries", "onlyLibraries",
                     "titleMapEnabled", "titleMap", "mapRowCount"):
             if key not in input or input[key] is None:
                 continue
@@ -475,6 +475,7 @@ class Plugin(PluginBase):
                     background=(bg_style != "plain"),
                     badge_count=total if badge_on else None,
                     badge_alpha=badge_alpha,
+                    random_color=bool(cfg.get("badgeRandomColor", True)),
                 )
                 entry["bytes"] = len(png)
 
@@ -502,6 +503,7 @@ class Plugin(PluginBase):
         }
         _save_state(ctx, state)
         return {"ok": True, "state": state}
+
 
 
 
